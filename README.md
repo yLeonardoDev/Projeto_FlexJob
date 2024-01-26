@@ -12,4 +12,5 @@ Anderson Cristiano Freitas Raimundo <br>
 Gabriel Louis da Silva Meszaros<br>
 Leonardo Cassiano dos Santos<br>
 Paulo Rafael Costa Sanges<br>
+Daik Fernando dos Santos Soares<br>
 
