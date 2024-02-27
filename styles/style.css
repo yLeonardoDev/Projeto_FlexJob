@@ -11,6 +11,20 @@ body {
   font-family: infinity, sans-serif;
 }
 
+@media screen  and (max-width: 768px) {
+  body {
+    font-family: 14px;
+  }
+}
+  
+@media screen  and (max-width: 769px) {
+  body {
+    font-family: 14px;
+  }
+}
+  
+
+
 header {
   display: flex;
   flex-direction: row;
