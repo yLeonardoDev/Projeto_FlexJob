@@ -4,198 +4,844 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="styles/style.css" rel="stylesheet">
-    <link href="styles/fonts.css" rel="stylesheet">
-    <link rel="Website icon" type="png" href="complements/images/3.png">
+    <link rel="Website icon" type="png" href="Proj_FlexJobs/complements/images/3.png">
     <title>FlexJobs - Candidatar-se</title>
+    <style>
+        /* Variáveis e reset */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1e293b;
+            --darker-color: #0f172a;
+            --light-color: #f8fafc;
+            --text-color: #334155;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --header-height: 80px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    <!--Colocar Icone na Pag Web-->
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-color: #f1f5f9;
+            position: relative;
+        }
+
+        /* Efeito de grade sutil no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(241, 245, 249, 0.9) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(241, 245, 249, 0.9) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+        }
+
+        /* Elementos geométricos de fundo */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-element {
+            position: absolute;
+            border-radius: 8px;
+            opacity: 0.1;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            top: -150px;
+            right: -100px;
+            transform: rotate(25deg);
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            bottom: 100px;
+            left: -50px;
+            transform: rotate(-15deg);
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            top: 50%;
+            right: 20%;
+            transform: rotate(45deg);
+        }
+
+        /* Header fixo */
+        #fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            height: var(--header-height);
+            transition: var(--transition);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+        }
+
+        #title {
+            display: flex;
+            align-items: center;
+        }
+
+        #flexbox-name {
+            height: 40px;
+            transition: var(--transition);
+        }
+
+        #flexbox-name:hover {
+            transform: scale(1.05);
+        }
+
+        /* Menu desktop */
+        .main-list ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .main-list li {
+            margin-left: 25px;
+        }
+
+        .main-list a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .main-list a:not(.subscribe-button):after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .main-list a:not(.subscribe-button):hover:after {
+            width: 100%;
+        }
+
+        .main-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .subscribe-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .subscribe-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Menu hambúrguer */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 1001;
+            position: absolute;
+            right: 5%;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--dark-color);
+            border-radius: 3px;
+            margin: 2px 0;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+
+        /* Conteúdo principal */
+        main {
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+            padding: 60px 5%;
+        }
+
+        .jobs-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--darker-color);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .main-title span {
+            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #description {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        /* Cards de vagas */
+        .job-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        }
+
+        .job-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--darker-color);
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .job-card h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 15px;
+            width: 40px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .job-card p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+            padding-left: 15px;
+        }
+
+        .job-contact {
+            background-color: rgba(37, 99, 235, 0.1);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .job-contact p {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Botão de candidatura */
+        .apply-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .apply-btn::after {
+            content: '→';
+            font-weight: bold;
+        }
+
+        /* Modal de contato */
+        .contact-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-modal.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--darker-color);
+            font-size: 1.5rem;
+        }
+
+        .modal-content p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .email-contact {
+            background-color: rgba(37, 99, 235, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .email-contact a {
+            color: var(--primary-dark);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .email-contact a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--darker-color);
+            color: var(--light-color);
+            padding: 60px 5% 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: var(--light-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary-color);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .job-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .main-list {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 350px;
+                height: 100vh;
+                background-color: white;
+                padding: 100px 30px 30px;
+                transition: var(--transition);
+                z-index: 1000;
+                box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+            }
+            
+            .main-list.active {
+                right: 0;
+            }
+            
+            .main-list ul {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .main-list li {
+                margin: 15px 0;
+                width: 100%;
+            }
+            
+            .main-list a {
+                display: block;
+                padding: 12px 0;
+                font-size: 1.1rem;
+                color: var(--dark-color);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .subscribe-button {
+                margin-top: 10px;
+                text-align: center;
+            }
+            
+            /* Animação do menu hambúrguer */
+            .menu-toggle.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .menu-toggle.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .job-card {
+                padding: 20px;
+            }
+
+            .bg-element {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-title {
+                font-size: 1.8rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-card h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <header id="fixed-header">
-        <div id="title">
-            <img src="complements/images/4.png" id="flexbox-name">
+    <!-- Elementos de fundo -->
+    <div class="bg-elements">
+        <div class="bg-element bg-element-1"></div>
+        <div class="bg-element bg-element-2"></div>
+        <div class="bg-element bg-element-3"></div>
+    </div>
+
+    <div id="fixed-header">
+        <header>
+            <div id="title">
+                <img src="Proj_FlexJobs/complements/images/1.png" id="flexbox-name" alt="FlexJobs Logo">
+            </div>
+
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <nav class="main-list" id="main-nav">
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="faleconosco.html">Fale Conosco</a></li>
+                    <li><a href="sobre.html">Sobre o projeto</a></li>
+                    <li><a href="freelance_criar.html">Área do contratante</a></li>
+                    <li><a href="candidatar-se.html">Jobs</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
+                </ul>
+            </nav>
+        </header>
+    </div>
+
+    <main>
+        <div class="jobs-container">
+            <h1 class="main-title"><span>Conheça o FlexJobs</span></h1>
+            <h2 class="main-title">Site para serviços freelancers!</h2>
+            <p id="description">Encontre as melhores oportunidades de trabalho freelance em diversas áreas. Conecte-se com contratantes e mostre seu talento!</p>
+
+            <div class="job-cards">
+                <!-- Vaga 1 -->
+                <div class="job-card">
+                    <h2>Desenvolvedor de Android</h2>
+                    <p>Sou João Pessoa, estou em busca de Desenvolvedores para criar um aplicativo que analisa nosso sistema as quantidades de estoque, se o estoque for baixo realizar uma solicitação de pedido.</p>
+                    <div class="job-contact">
+                        <p>Contato: joaopessoa@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="joaopessoa@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 2 -->
+                <div class="job-card">
+                    <h2>Projeto de Criação de WebSite</h2>
+                    <p>Somos uma empresa privada, estamos em busca programadores para criar um Website interativo com nossos clientes.</p>
+                    <div class="job-contact">
+                        <p>Contato: roberto@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="roberto@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 3 -->
+                <div class="job-card">
+                    <h2>Design gráfico</h2>
+                    <p>Somos uma empresa multinacional e estamos em busca de design gráficos que faça uma apresentação do nosso trabalho, fazer uma logo com a cara da empresa.</p>
+                    <div class="job-contact">
+                        <p>Contato: industria123@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="industria123@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 4 -->
+                <div class="job-card">
+                    <h2>Analista de Sistema</h2>
+                    <p>Somos a empresa Tambasas estamos 30 anos no mercado, estamos em busca de programadores para realizar um software que permite executar multi tarefas de transferência de dados.</p>
+                    <div class="job-contact">
+                        <p>Contato: roberto@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="roberto@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 5 -->
+                <div class="job-card">
+                    <h2>Programador Delphi</h2>
+                    <p>Desenvolvimento e manutenção de sistema em Delphi. - Construção de SQL para consultas em banco de dados Postgres, - Modelagem de Dados, documentação do desenvolvimento.</p>
+                    <div class="job-contact">
+                        <p>Contato: rafaela@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="rafaela@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 6 -->
+                <div class="job-card">
+                    <h2>Programador de CLP</h2>
+                    <p>Executar a programação do sistema de automação, CLP's (siemens, rockwell, omeron, Schneider e outros). Programação HM's, configurações de inversores. Efetuar instalações (internas e em serviços externos, alocados no cliente), de máquinas e equipamentos, conforme especificações; Analisar características e especificações técnicas de construção, instalação, funcionamento, manutenção e reparação de instalações e equipamentos elétricos, dentro dos padrões técnicos exigidos.</p>
+                    <div class="job-contact">
+                        <p>Contato: rodrigo@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="rodrigo@contato.com">Candidatar-se</button>
+                </div>
+
+                <!-- Vaga 7 -->
+                <div class="job-card">
+                    <h2>Analista de Infraestrutura</h2>
+                    <p>Presta suporte e manutenção de servidores e data center, planeja capacidade e desenvolve projetos de melhorias dos serviços corporativos. Realiza criação de usuários e manutenção de grupos para concessão de privilégios com permissão de acesso.</p>
+                    <div class="job-contact">
+                        <p>Contato: rafaela@contato.com</p>
+                    </div>
+                    <button class="apply-btn" data-email="rafaela@contato.com">Candidatar-se</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de contato -->
+    <div class="contact-modal" id="contactModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <h3>Entre em Contato</h3>
+            <p>Para se candidatar a esta vaga, entre em contato através do email:</p>
+            <div class="email-contact">
+                <a href="#" id="modalEmail">contato@exemplo.com</a>
+            </div>
+            <p>Envie seu currículo e portfolio para análise.</p>
+        </div>
+    </div>
+
+    <!-- rodape -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h2>Sobre nós</h2>
+                <p>FlexJobs é uma plataforma para conectar freelancers e contratantes em busca de talento. Oferecemos oportunidades flexíveis para profissionais em todo o mundo.</p>
+            </div>
+
+            <div class="footer-section">
+                <h2>Entre em contato</h2>
+                <p>Email: contato@flexjobs.com</p>
+                <p>Telefone: (11) 5050-5050</p>
+            </div>
+
+            <div class="footer-section">
+                <h2>Nos sigam nas redes</h2>
+                <ul>
+                    <li><a href="#">Instagram: @flexjobs</a></li>
+                    <li><a href="#">Facebook: /flexjobs</a></li>
+                    <li><a href="#">LinkedIn: FlexJobs</a></li>
+                </ul>
+            </div>
         </div>
 
-        <ul class="main-list">
-            <li><a href="index.html">Início</a>
-            <li><a href="faleconosco.html">Fale Conosco </a></li>
-            <li><a href="sobre.html">Sobre o projeto</a></li>
-            <li><a href="freelance_criar.html">Área do contratante</a></li>
-            <li><a href="candidatar-se.html">Jobs</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
-        </ul>
-    </header>
-    <main>
-        <aside>
-            <h2 class="main-title" style="color:rgb(51, 181, 220);"> Conheça o FlexJobs</span></h2>
-            <h2 class="main-title">Site para serviços freelancers!</h2>
-            <p id="description"></p>
-            <br>
+        <div class="footer-bottom">
+            <p>&copy; 2023 FlexJobs. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
-            <h2> <strong> Desenvolvedor de Andoid </strong></h2>
+    <script>
+        // Menu hambúrguer
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        
+        menuToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            mainNav.classList.toggle('active');
+            
+            // Previne a rolagem da página quando o menu está aberto
+            document.body.style.overflow = this.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Fechar menu ao clicar em um link
+        const navLinks = document.querySelectorAll('.main-list a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // Animação dos cards ao scroll
+        const jobCards = document.querySelectorAll('.job-card');
+        
+        function checkScroll() {
+            const triggerBottom = window.innerHeight * 0.8;
+            
+            jobCards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                
+                if (cardTop < triggerBottom) {
+                    card.classList.add('visible');
+                }
+            });
+        }
+        
+        // Verificar posição inicial e adicionar event listener
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+        
+        // Efeito parallax nos elementos de fundo
+        const bgElements = document.querySelectorAll('.bg-element');
+        
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.pageYOffset;
+            
+            bgElements.forEach((element, index) => {
+                const speed = 0.05 * (index + 1);
+                element.style.transform = `rotate(${scrollPosition * speed * 0.1}deg) translateY(${scrollPosition * speed}px)`;
+            });
+        });
 
-            <p> Sou João Pessoa, estou em busca de Desenvolvedores para criar um aplicativo que analisa
-                nosso sistema
-                as quantidades de estoque, se o estoque for baixo realizar uma solicitação de pedido. </p>
+        // Header com efeito de blur ao rolar
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('fixed-header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.05)';
+            }
+        });
 
-            <section>
-                <button>
-                    <details> <!--Details = Guardar detalhes-->
-                        <summary> Candidatar-se</summary> <!--Nome do "Botão"-->
-                        <p style="color: blue;background-color: white;">joaopessoa@contato.com</p>
-                    </details>
+        // Modal de contato
+        const contactModal = document.getElementById('contactModal');
+        const modalEmail = document.getElementById('modalEmail');
+        const closeModal = document.getElementById('closeModal');
+        const applyButtons = document.querySelectorAll('.apply-btn');
 
-                </button>
-            </section>
+        applyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const email = button.getAttribute('data-email');
+                modalEmail.textContent = email;
+                modalEmail.href = `mailto:${email}?subject=Candidatura para vaga`;
+                contactModal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            });
+        });
 
-            <h2> <strong> Projeto de Criação de WebSite </strong></h2>
+        closeModal.addEventListener('click', () => {
+            contactModal.classList.remove('visible');
+            document.body.style.overflow = '';
+        });
 
-            <p>Somos uma empresa privada, estamos em busca programadores para criar um Website interativo
-                com nossos
-                clientes.
-            </p>
-
-            <section>
-                <button>
-                    <details>
-                        <summary> Candidatar-se</summary>
-                        <p style="color: blue;background-color: white;">roberto@contato.com</p>
-                    </details>
-
-                </button>
-
-                <h2> <strong>Design gráfico</strong></h2>
-
-                <p> Somos uma empresa multinacional e estamos em busca de design gráficos que faça
-                    uma apresentação do nosso trabalho, fazer uma logo com a cara da empresa.
-                </p>
-
-                <section>
-                    <button>
-                        <details>
-                            <summary> Candidatar-se</summary>
-                            <p style="color: blue;background-color: white;">industria123@contato.com</p>
-                        </details>
-
-                    </button>
-                </section>
-                <h2> <strong> Analista de Sistema </strong></h2>
-
-                <p>
-                    Somos a empresa Tambasas estamos 30 anos no mercado, estamos em busca de programadores para
-                    realizar
-                    um software que permite executar multi tarefas de transferência de dados.
-                </p>
-
-                <section>
-                    <button>
-                        <details>
-                            <summary> Candidatar-se</summary>
-                            <p style="color: blue;background-color: white;">roberto@contato.com</p>
-                        </details>
-
-                    </button>
-
-                </section>
-
-                <h2> <strong> Programador Delphi </strong></h2>
-
-                <p>
-                    Desenvolvimento e manutenção de sistema em Delphi. - Construção de SQL para consultas em
-                    banco de dados Postgres,
-                    - Modelagem de Dados, documentação do desenvolvimento.
-                </p>
-
-                <section>
-                    <button>
-                        <details>
-                            <summary> Candidatar-se</summary>
-                            <p style="color: blue;background-color: white;">rafaela@contato.com</p>
-                        </details>
-
-                    </button>
-                </section>
-
-
-                <h2> <strong> Programador de CLP </strong></h2>
-
-                <p>
-                    Executar a programação do sistema de automação, CLP’s (siemens, rockwell, omeron, Schneider
-                    e outros). Programação HM’s, configurações de inversores. Efetuar instalações (internas e em
-                    serviços
-                    externos, alocados no cliente), de máquinas e equipamentos, conforme especificações;
-                    Analisar
-                    características e especificações técnicas de construção, instalação, funcionamento,
-                    manutenção e
-                    reparação de instalações e equipamentos elétricos, dentro dos padrões técnicos exigidos.
-                    Manter
-                    ferramentas em condições de uso;
-                    Executar as suas atividades seguindo as normas de segurança internas estabelecidas,
-                    utilizando os EPIs
-                    obrigatórios.
-                </p>
-
-                <section>
-                    <button>
-                        <details>
-                            <summary> Candidatar-se</summary>
-                            <p style="color: blue;background-color: white;">rodrigo@contato.com</p>
-                        </details>
-
-                    </button>
-                </section>
-
-                <h2> <strong> Analista de Infraestrutura </strong></h2>
-
-                <p>
-                    Presta suporte e manutenção de servidores e data center, planeja capacidade e desenvolve
-                    projetos de melhorias dos serviços corporativos.
-                    Realiza criação de usuários e manutenção de grupos para concessão de privilégios com
-                    permissão de acesso
-                </p>
-
-                <section>
-                    <button>
-                        <details>
-                            <summary> Candidatar-se</summary>
-                            <p style="color: blue;background-color: white;">rafaela@contato.com</p>
-                        </details>
-
-                    </button>
-                </section>
-
-                <!-- rodape -->
-
-                <footer>
-                    <div class="footer-content">
-                        <div class="footer-section about">
-                            <h2>Sobre nós</h2>
-                            <p>FlexJobs é uma plataforma para conectar freelancers e contratantes em busca de talento.
-                                Oferecemos oportunidades flexíveis para profissionais em todo o mundo.</p>
-                        </div>
-
-                        <div class="footer-section contact">
-                            <h2>Entre em contato</h2>
-                            <p>Email: contato@flexjobs.com</p>
-                            <p>Telefone: (11) 5050-5050</p>
-                        </div>
-
-                        <div class="footer-section links">
-                            <h2>Nos sigam nas redes</h2>
-                            <ul>
-                                <li>Instagram: @flexjobs</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="footer-bottom">
-                        <p>&copy; 2023 FlexJobs. Todos os direitos reservados.</p>
-                    </div>
-                </footer>
-
+        // Fechar modal clicando fora
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) {
+                contactModal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -4,90 +4,803 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="styles/style.css" rel="stylesheet">
-  <link href="styles/fonts.css" rel="stylesheet">
-  <link rel="Website icon" type="png" href="complements/images/3.png">
-  <title> FlexJobs - Login</title>
+  <link rel="Website icon" type="png" href="Proj_FlexJobs/complements/images/3.png">
+  <title>FlexJobs - Login</title>
+  <style>
+    /* Variáveis e reset */
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #10b981;
+      --accent-color: #f59e0b;
+      --dark-color: #1e293b;
+      --darker-color: #0f172a;
+      --light-color: #f8fafc;
+      --text-color: #334155;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --header-height: 80px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      overflow-x: hidden;
+      background-color: #f1f5f9;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Efeito de grade sutil no fundo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(241, 245, 249, 0.9) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(241, 245, 249, 0.9) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -2;
+    }
+
+    /* Elementos geométricos de fundo */
+    .bg-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-element {
+      position: absolute;
+      border-radius: 8px;
+      opacity: 0.1;
+    }
+
+    .bg-element-1 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      top: -150px;
+      right: -100px;
+      transform: rotate(25deg);
+    }
+
+    .bg-element-2 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+      bottom: 100px;
+      left: -50px;
+      transform: rotate(-15deg);
+    }
+
+    .bg-element-3 {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      top: 50%;
+      right: 20%;
+      transform: rotate(45deg);
+    }
+
+    /* Header fixo */
+    #fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      height: var(--header-height);
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+    }
+
+    #title {
+      display: flex;
+      align-items: center;
+    }
+
+    #flexbox-name {
+      height: 40px;
+      transition: var(--transition);
+    }
+
+    #flexbox-name:hover {
+      transform: scale(1.05);
+    }
+
+    /* Menu desktop */
+    .main-list ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    .main-list li {
+      margin-left: 25px;
+    }
+
+    .main-list a {
+      color: var(--dark-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .main-list a:not(.subscribe-button):after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--primary-color);
+      transition: var(--transition);
+    }
+
+    .main-list a:not(.subscribe-button):hover:after {
+      width: 100%;
+    }
+
+    .main-list a:hover {
+      color: var(--primary-color);
+    }
+
+    .subscribe-button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: var(--transition);
+      font-weight: 600;
+    }
+
+    .subscribe-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Menu hambúrguer */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: var(--dark-color);
+      border-radius: 3px;
+      margin: 2px 0;
+      transition: var(--transition);
+      transform-origin: center;
+    }
+
+    /* Conteúdo principal */
+    main {
+      margin-top: var(--header-height);
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 5%;
+    }
+
+    .login-container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: var(--transition);
+    }
+
+    .login-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .login-box {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-box > p:first-child {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: var(--darker-color);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #login-logo {
+      height: 40px;
+      transition: var(--transition);
+    }
+
+    #login-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .user-box {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .user-box input {
+      width: 100%;
+      padding: 15px 0;
+      font-size: 16px;
+      color: var(--dark-color);
+      border: none;
+      border-bottom: 2px solid #ddd;
+      outline: none;
+      background: transparent;
+      transition: var(--transition);
+    }
+
+    .user-box label {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      font-size: 16px;
+      color: #999;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .user-box input:focus,
+    .user-box input:valid {
+      border-bottom-color: var(--primary-color);
+    }
+
+    .user-box input:focus ~ label,
+    .user-box input:valid ~ label {
+      top: -20px;
+      left: 0;
+      color: var(--primary-color);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form a {
+      position: relative;
+      display: inline-block;
+      padding: 15px 30px;
+      color: white;
+      font-size: 16px;
+      text-decoration: none;
+      text-transform: uppercase;
+      overflow: hidden;
+      transition: 0.5s;
+      margin-top: 20px;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      border-radius: 8px;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+    }
+
+    form a:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    form a span {
+      position: absolute;
+      display: block;
+    }
+
+    form a span:nth-child(1) {
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, white);
+      animation: btn-anim1 1.5s linear infinite;
+    }
+
+    @keyframes btn-anim1 {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    form a span:nth-child(2) {
+      top: -100%;
+      right: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, white);
+      animation: btn-anim2 1.5s linear infinite;
+      animation-delay: 0.375s;
+    }
+
+    @keyframes btn-anim2 {
+      0% { top: -100%; }
+      50%, 100% { top: 100%; }
+    }
+
+    form a span:nth-child(3) {
+      bottom: 0;
+      right: -100%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(270deg, transparent, white);
+      animation: btn-anim3 1.5s linear infinite;
+      animation-delay: 0.75s;
+    }
+
+    @keyframes btn-anim3 {
+      0% { right: -100%; }
+      50%, 100% { right: 100%; }
+    }
+
+    form a span:nth-child(4) {
+      bottom: -100%;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(360deg, transparent, white);
+      animation: btn-anim4 1.5s linear infinite;
+      animation-delay: 1.125s;
+    }
+
+    @keyframes btn-anim4 {
+      0% { bottom: -100%; }
+      50%, 100% { bottom: 100%; }
+    }
+
+    .login-box > p:last-child {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--text-color);
+    }
+
+    .a2 {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .a2:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .login-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 40px;
+    }
+
+    #Login-logotipo {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    #Login-logotipo:hover {
+      transform: scale(1.05) rotate(2deg);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--darker-color);
+      color: var(--light-color);
+      padding: 40px 5% 20px;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-section h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      color: white;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--secondary-color);
+      border-radius: 2px;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section li {
+      margin-bottom: 12px;
+    }
+
+    .footer-section a {
+      color: var(--light-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+      color: var(--secondary-color);
+      padding-left: 5px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Responsividade */
+    @media (max-width: 992px) {
+      .login-container {
+        flex-direction: column;
+        max-width: 500px;
+      }
+      
+      .login-image {
+        order: -1;
+        padding: 30px;
+      }
+      
+      #Login-logotipo {
+        max-width: 70%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .main-list {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 350px;
+        height: 100vh;
+        background-color: white;
+        padding: 100px 30px 30px;
+        transition: var(--transition);
+        z-index: 1000;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .main-list.active {
+        right: 0;
+      }
+      
+      .main-list ul {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .main-list li {
+        margin: 15px 0;
+        width: 100%;
+      }
+      
+      .main-list a {
+        display: block;
+        padding: 12px 0;
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .subscribe-button {
+        margin-top: 10px;
+        text-align: center;
+      }
+      
+      /* Animação do menu hambúrguer */
+      .menu-toggle.active span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      
+      .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+      
+      .login-box {
+        padding: 30px;
+      }
+
+      .bg-element {
+        display: none;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .login-box > p:first-child {
+        font-size: 1.8rem;
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
-<body class="bodylogin">
-
-  <header id="fixed-header">
-    <div id="title">
-      <img src="complements/images/4.png" id="flexbox-name">
-    </div>
-
-    <ul class="main-list">
-      <li><a href="index.html">Início</a>
-      <li><a href="faleconosco.html">Fale Conosco </a></li>
-      <li><a href="sobre.html">Sobre o projeto</a></li>
-      <li><a href="freelance_criar.html">Área do contratante</a></li>
-      <li><a href="candidatar-se.html">Jobs</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
-    </ul>
-  </header>
-  <div class="login-box">
-    <p>Login - <img id="login-logo" src="complements/images/4.png" alt="logo"></p>
-    <form>
-      <div class="user-box">
-        <input required="" name="" type="text">
-        <label>Email</label>
-      </div>
-      <div class="user-box">
-        <input required="" name="" type="password">
-        <label>Senha</label>
-      </div>
-      <a href="candidatar-se.html">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Entrar
-      </a>
-      <a href="index.html">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Voltar
-      </a>
-    </form>
-    <p>Não tem uma conta ? <a href="cadastro.html" class="a2"> Cadastrar-se</a></p>
+<body>
+  <!-- Elementos de fundo -->
+  <div class="bg-elements">
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    <div class="bg-element bg-element-3"></div>
   </div>
 
-  <article>
-    <img src="complements/images/3.png" alt="logotipo do site" id="Login-logotipo">
-  </article>
+  <div id="fixed-header">
+    <header>
+      <div id="title">
+        <img src="complements/images/4.png" id="flexbox-name" alt="FlexJobs Logo">
+      </div>
+
+      <div class="menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="main-list" id="main-nav">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="faleconosco.html">Fale Conosco</a></li>
+          <li><a href="sobre.html">Sobre o projeto</a></li>
+          <li><a href="freelance_criar.html">Área do contratante</a></li>
+          <li><a href="candidatar-se.html">Jobs</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+
+  <main>
+    <div class="login-container">
+      <div class="login-box">
+        <p>Login - <img id="login-logo" src="Proj_FlexJobs/complements/images/1.png" alt="logo"></p>
+        <form>
+          <div class="user-box">
+            <input required name="email" type="email">
+            <label>Email</label>
+          </div>
+          <div class="user-box">
+            <input required name="password" type="password">
+            <label>Senha</label>
+          </div>
+          <a href="candidatar-se.html">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Entrar
+          </a>
+          <a href="index.html" style="background: linear-gradient(135deg, #6b7280, #9ca3af); margin-top: 10px;">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Voltar
+          </a>
+        </form>
+        <p>Não tem uma conta? <a href="cadastro.html" class="a2">Cadastrar-se</a></p>
+      </div>
+
+      <div class="login-image">
+        <img src="Proj_FlexJobs/complements/images/3.png" alt="logotipo do site" id="Login-logotipo">
+      </div>
+    </div>
+  </main>
 
   <!-- rodape -->
-
-  <footer id="footer">
-    <div id="footer-content">
-      <div id="footer-section about">
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
         <h2>Sobre nós</h2>
         <p>FlexJobs é uma plataforma para conectar freelancers e contratantes em busca de talento. Oferecemos
           oportunidades flexíveis para profissionais em todo o mundo.</p>
       </div>
 
-      <div id="footer-section contact">
+      <div class="footer-section">
         <h2>Entre em contato</h2>
         <p>Email: contato@flexjobs.com</p>
         <p>Telefone: (11) 5050-5050</p>
       </div>
 
-      <div id="footer-section links">
+      <div class="footer-section">
         <h2>Nos sigam nas redes</h2>
         <ul>
-          <li>Instagram: @flexjobs</li>
+          <li><a href="#">Instagram: @flexjobs</a></li>
+          <li><a href="#">Facebook: /flexjobs</a></li>
+          <li><a href="#">LinkedIn: FlexJobs</a></li>
         </ul>
       </div>
     </div>
 
-    <div id="footer-bottom">
-      <p> &copy; 2023 FlexJobs. Todos os direitos reservados.</p>
+    <div class="footer-bottom">
+      <p>&copy; 2023 FlexJobs. Todos os direitos reservados.</p>
     </div>
   </footer>
+
+  <script>
+    // Menu hambúrguer
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mainNav.classList.toggle('active');
+      
+      // Previne a rolagem da página quando o menu está aberto
+      document.body.style.overflow = this.classList.contains('active') ? 'hidden' : '';
+    });
+    
+    // Fechar menu ao clicar em um link
+    const navLinks = document.querySelectorAll('.main-list a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        mainNav.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Animação do container de login
+    const loginContainer = document.querySelector('.login-container');
+    
+    function checkScroll() {
+      const triggerBottom = window.innerHeight * 0.8;
+      const containerTop = loginContainer.getBoundingClientRect().top;
+      
+      if (containerTop < triggerBottom) {
+        loginContainer.classList.add('visible');
+      }
+    }
+    
+    // Verificar posição inicial e adicionar event listener
+    window.addEventListener('scroll', checkScroll);
+    window.addEventListener('load', checkScroll);
+    
+    // Efeito parallax nos elementos de fundo
+    const bgElements = document.querySelectorAll('.bg-element');
+    
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.pageYOffset;
+      
+      bgElements.forEach((element, index) => {
+        const speed = 0.05 * (index + 1);
+        element.style.transform = `rotate(${scrollPosition * speed * 0.1}deg) translateY(${scrollPosition * speed}px)`;
+      });
+    });
+
+    // Header com efeito de blur ao rolar
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('fixed-header');
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+      } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.05)';
+      }
+    });
+
+    // Validação do formulário
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = form.querySelector('input[name="email"]');
+      const password = form.querySelector('input[name="password"]');
+      let isValid = true;
+      
+      if (!email.value.trim()) {
+        email.style.borderBottomColor = 'red';
+        isValid = false;
+      } else {
+        email.style.borderBottomColor = '';
+      }
+      
+      if (!password.value.trim()) {
+        password.style.borderBottomColor = 'red';
+        isValid = false;
+      } else {
+        password.style.borderBottomColor = '';
+      }
+      
+      if (isValid) {
+        // Simulação de login bem-sucedido
+        alert('Login realizado com sucesso! Redirecionando...');
+        window.location.href = 'candidatar-se.html';
+      } else {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -1,41 +1,529 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="Website icon" type="png" href="Proj_FlexJobs/complements/images/3.png">
   <title>FlexJobs - Área do contratante</title>
-  <link href="styles/style.css" rel="stylesheet">
-  <link rel="Website icon" type="png" href="complements/images/3.png">
+  <style>
+    /* Variáveis e reset */
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary-color: #10b981;
+      --accent-color: #f59e0b;
+      --dark-color: #1e293b;
+      --darker-color: #0f172a;
+      --light-color: #f8fafc;
+      --text-color: #334155;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --header-height: 80px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      overflow-x: hidden;
+      background-color: #f1f5f9;
+      position: relative;
+    }
+
+    /* Efeito de grade sutil no fundo */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(241, 245, 249, 0.9) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(241, 245, 249, 0.9) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -2;
+    }
+
+    /* Elementos geométricos de fundo */
+    .bg-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-element {
+      position: absolute;
+      border-radius: 8px;
+      opacity: 0.1;
+    }
+
+    .bg-element-1 {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      top: -150px;
+      right: -100px;
+      transform: rotate(25deg);
+    }
+
+    .bg-element-2 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+      bottom: 100px;
+      left: -50px;
+      transform: rotate(-15deg);
+    }
+
+    .bg-element-3 {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      top: 50%;
+      right: 20%;
+      transform: rotate(45deg);
+    }
+
+    /* Header fixo */
+    #fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      height: var(--header-height);
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+    }
+
+    #title {
+      display: flex;
+      align-items: center;
+    }
+
+    #flexbox-name {
+      height: 40px;
+      transition: var(--transition);
+    }
+
+    #flexbox-name:hover {
+      transform: scale(1.05);
+    }
+
+    /* Menu desktop */
+    .main-list ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    .main-list li {
+      margin-left: 25px;
+    }
+
+    .main-list a {
+      color: var(--dark-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+      padding: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .main-list a:not(.subscribe-button):after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--primary-color);
+      transition: var(--transition);
+    }
+
+    .main-list a:not(.subscribe-button):hover:after {
+      width: 100%;
+    }
+
+    .main-list a:hover {
+      color: var(--primary-color);
+    }
+
+    .subscribe-button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: var(--transition);
+      font-weight: 600;
+    }
+
+    .subscribe-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Menu hambúrguer */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: var(--dark-color);
+      border-radius: 3px;
+      margin: 2px 0;
+      transition: var(--transition);
+      transform-origin: center;
+    }
+
+    /* Conteúdo principal */
+    main {
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+      padding: 60px 5%;
+    }
+
+    #freelance-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: var(--transition);
+      opacity: 0;
+      transform: translateY(30px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    #freelance-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #freelance-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    #freelance-title {
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      color: var(--darker-color);
+      text-align: center;
+      font-weight: 700;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    #freelance-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
+    .freelance-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .freelance-form label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-top: 20px;
+    }
+
+    .input-freelance, #nicho, #descricao {
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .input-freelance:focus, #nicho:focus, #descricao:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    #nicho {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+    }
+
+    #descricao {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .submit-button {
+      margin-top: 30px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      align-self: center;
+      width: 200px;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--darker-color);
+      color: var(--light-color);
+      padding: 60px 5% 20px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-section h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      color: white;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--secondary-color);
+      border-radius: 2px;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section li {
+      margin-bottom: 12px;
+    }
+
+    .footer-section a {
+      color: var(--light-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+      color: var(--secondary-color);
+      padding-left: 5px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Responsividade */
+    @media (max-width: 992px) {
+      #freelance-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .main-list {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 350px;
+        height: 100vh;
+        background-color: white;
+        padding: 100px 30px 30px;
+        transition: var(--transition);
+        z-index: 1000;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .main-list.active {
+        right: 0;
+      }
+      
+      .main-list ul {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .main-list li {
+        margin: 15px 0;
+        width: 100%;
+      }
+      
+      .main-list a {
+        display: block;
+        padding: 12px 0;
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .subscribe-button {
+        margin-top: 10px;
+        text-align: center;
+      }
+      
+      /* Animação do menu hambúrguer */
+      .menu-toggle.active span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+      
+      .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .menu-toggle.active span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+      
+      #freelance-container {
+        padding: 30px 20px;
+      }
+
+      .bg-element {
+        display: none;
+      }
+    }
+
+    @media (max-width: 576px) {
+      #freelance-title {
+        font-size: 1.8rem;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .submit-button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <header id="fixed-header">
-    <div id="title">
-      <img src="complements/images/4.png" id="flexbox-name">
-    </div>
+  <!-- Elementos de fundo -->
+  <div class="bg-elements">
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    <div class="bg-element bg-element-3"></div>
+  </div>
 
-    <ul class="main-list">
-      <li><a href="index.html">Início</a>
-      <li><a href="faleconosco.html">Fale Conosco </a></li>
-      <li><a href="sobre.html">Sobre o projeto</a></li>
-      <li><a href="freelance_criar.html">Área do contratante</a></li>
-      <li><a href="candidatar-se.html">Jobs</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
-    </ul>
-  </header>
+  <div id="fixed-header">
+    <header>
+      <div id="title">
+        <img src="Proj_FlexJobs/complements/images/1.png" id="flexbox-name" alt="FlexJobs Logo">
+      </div>
+
+      <div class="menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="main-list" id="main-nav">
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="faleconosco.html">Fale Conosco</a></li>
+          <li><a href="sobre.html">Sobre o projeto</a></li>
+          <li><a href="freelance_criar.html">Área do contratante</a></li>
+          <li><a href="candidatar-se.html">Jobs</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="cadastro.html" class="subscribe-button">Crie uma conta</a></li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+
   <main>
     <div id="freelance-container">
       <h1 id="freelance-title">Publique a sua proposta!</h1>
       <form class="freelance-form">
         <label for="contratante">Nome do contratante: </label>
         <input type="text" name="contratante" class="input-freelance" placeholder="Digite o nome completo">
+        
         <label for="email">Email de contato: </label>
         <input type="email" name="email" class="input-freelance" placeholder="Digite seu email">
+        
         <label for="cpf">CPF do contratante: </label>
         <input type="number" name="cpf" class="input-freelance" placeholder="Digite o CPF">
-        <label>Nicho de serviço</label>
+        
+        <label for="nicho">Nicho de serviço</label>
         <select id="nicho">
           <option>Área de Limpeza</option>
           <option>Área Gastrônomica/Alimentícia</option>
@@ -47,8 +535,11 @@
           <option>Área de Jornalismo/Mídias digitais</option>
           <option>Área de Cuidado aos idosos/Pessoas com deficiência</option>
         </select>
+        
         <label for="descricao">Descreva o serviço proposto: </label>
-        <textarea name="descricao" id="descricao" cols="30" rows="10"></textarea>
+        <textarea name="descricao" id="descricao" cols="30" rows="10" placeholder="Descreva detalhadamente o serviço que precisa ser realizado"></textarea>
+        
+        <button type="submit" class="submit-button">Publicar Proposta</button>
       </form>
     </div>
   </main>
@@ -56,22 +547,24 @@
   <!-- rodape -->
   <footer>
     <div class="footer-content">
-      <div class="footer-section about">
+      <div class="footer-section">
         <h2>Sobre nós</h2>
         <p>FlexJobs é uma plataforma para conectar freelancers e contratantes em busca de talento. Oferecemos
           oportunidades flexíveis para profissionais em todo o mundo.</p>
       </div>
 
-      <div class="footer-section contact">
+      <div class="footer-section">
         <h2>Entre em contato</h2>
         <p>Email: contato@flexjobs.com</p>
         <p>Telefone: (11) 5050-5050</p>
       </div>
 
-      <div class="footer-section links">
+      <div class="footer-section">
         <h2>Nos sigam nas redes</h2>
         <ul>
-          <li>Instagram: @flexjobs</li>
+          <li><a href="#">Instagram: @flexjobs</a></li>
+          <li><a href="#">Facebook: /flexjobs</a></li>
+          <li><a href="#">LinkedIn: FlexJobs</a></li>
         </ul>
       </div>
     </div>
@@ -81,6 +574,96 @@
     </div>
   </footer>
 
+  <script>
+    // Menu hambúrguer
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    menuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mainNav.classList.toggle('active');
+      
+      // Previne a rolagem da página quando o menu está aberto
+      document.body.style.overflow = this.classList.contains('active') ? 'hidden' : '';
+    });
+    
+    // Fechar menu ao clicar em um link
+    const navLinks = document.querySelectorAll('.main-list a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        mainNav.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+    
+    // Animação do formulário ao scroll
+    const freelanceContainer = document.getElementById('freelance-container');
+    
+    function checkScroll() {
+      const triggerBottom = window.innerHeight * 0.8;
+      const containerTop = freelanceContainer.getBoundingClientRect().top;
+      
+      if (containerTop < triggerBottom) {
+        freelanceContainer.classList.add('visible');
+      }
+    }
+    
+    // Verificar posição inicial e adicionar event listener
+    window.addEventListener('scroll', checkScroll);
+    window.addEventListener('load', checkScroll);
+    
+    // Efeito parallax nos elementos de fundo
+    const bgElements = document.querySelectorAll('.bg-element');
+    
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.pageYOffset;
+      
+      bgElements.forEach((element, index) => {
+        const speed = 0.05 * (index + 1);
+        element.style.transform = `rotate(${scrollPosition * speed * 0.1}deg) translateY(${scrollPosition * speed}px)`;
+      });
+    });
+
+    // Header com efeito de blur ao rolar
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('fixed-header');
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+      } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.05)';
+      }
+    });
+
+    // Validação básica do formulário
+    const form = document.querySelector('.freelance-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Validação simples
+      const inputs = form.querySelectorAll('input, textarea, select');
+      let isValid = true;
+      
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          input.style.borderColor = 'red';
+          isValid = false;
+        } else {
+          input.style.borderColor = '#ddd';
+        }
+      });
+      
+      if (isValid) {
+        // Simulação de envio bem-sucedido
+        alert('Proposta publicada com sucesso! Em breve nossos freelancers entrarão em contato.');
+        form.reset();
+      } else {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+      }
+    });
+  </script>
 </body>
 
 </html>
